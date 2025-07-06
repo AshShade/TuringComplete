@@ -1,28 +1,57 @@
-# How to run the Instruction Set Viewer
 
+# TuringComplete Instruction Set Viewer
 
-1. 安装依赖：
+A modern web tool for browsing, searching, and visualizing a custom 32-bit instruction set, built with React, Vite, and Ant Design.
 
-   ```sh
-   npm install
-   ```
+## Features
+- Visualize a YAML-defined 32-bit instruction set
+- Fuzzy search and type filtering
+- Responsive dark theme UI
+- Click to view detailed instruction info
+- Colorful opcode binary visualization
+- Deployable to GitHub Pages
 
-2. 启动开发服务器：
+## Project Structure
+```
+├── public/
+│   └── instruction_set.yaml       # Instruction set definition
+├── src/
+│   ├── App.jsx                    # Main React app
+│   ├── main.jsx                   # Entry point
+│   ├── yaml.js                    # YAML parsing helper
+│   ├── style.js, global.js        # Styles and theme
+│   └── ...
+├── vite.config.js                 # Vite config (with base for GitHub Pages)
+├── package.json                   # Scripts and dependencies
+├── .gitignore
+└── README.md
+```
 
-   ```sh
-   npm run dev
-   ```
+## Getting Started
 
-3. 在浏览器访问 http://localhost:5173
+### 1. Install dependencies
+```sh
+npm install
+```
 
-4. 确保 instruction_set.yaml 文件位于项目根目录或 public 目录，页面会自动加载并展示指令集。
+### 2. Run in development mode
+```sh
+npm run dev
+```
+Visit the local address shown in the terminal.
 
----
-
-如需构建生产版本：
-
+### 3. Build for production
 ```sh
 npm run build
 ```
+The static site will be output to the `dist/` directory.
 
-构建后静态文件在 dist 目录，可用 `npm run preview` 本地预览。
+### 4. Preview production build locally
+```sh
+npm run preview
+```
+
+## 5. Deploy to GitHub Pages
+```sh
+npm run deploy
+```
