@@ -37,7 +37,7 @@ export default function App() {
   const [selected, setSelected] = useState(null);
 
   useEffect(() => {
-    fetch('/instruction_set.yaml')
+    fetch(`${import.meta.env.BASE_URL}instruction_set.yaml`)
       .then(res => res.text())
       .then(setYamlText);
   }, []);
