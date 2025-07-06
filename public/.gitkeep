@@ -1,0 +1,3 @@
+// This file is required for Vite to resolve the YAML file at runtime
+// It will be copied to the dist directory
+// No code needed here
