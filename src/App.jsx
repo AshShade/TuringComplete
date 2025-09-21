@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Layout, Table, Input, Tag, Select, Typography, Modal, Button, ConfigProvider, theme } from 'antd';
 import yaml from 'js-yaml';
 
@@ -35,19 +35,24 @@ export default function App() {
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
   const [selected, setSelected] = useState(null);
+  const [showBitLayout, setShowBitLayout] = useState(false);
 
   useEffect(() => {
     fetch(`${import.meta.env.BASE_URL}instruction_set.yaml`)
       .then(res => res.text())
-      .then(setYamlText);
+      .then(setYamlText)
+      .catch(() => setYamlText(''));
   }, []);
 
   useEffect(() => {
     setInstructions(parseYamlInstructions(yamlText));
   }, [yamlText]);
 
-  const filtered = instructions.filter(inst => {
-    const matchType = typeFilter === 'all' || inst.type === typeFilter || (typeFilter === 'logic' && inst.type === 'arithmetic');
+  const filtered = useMemo(() => instructions.filter(inst => {
+    const matchType =
+      typeFilter === 'all' ||
+      (typeFilter === 'arithmetic_logic' && (inst.type === 'arithmetic' || inst.type === 'logic')) ||
+      inst.type === typeFilter;
     const matchSearch =
       !search ||
       Object.values(inst)
@@ -55,7 +60,7 @@ export default function App() {
         .toLowerCase()
         .includes(search.toLowerCase());
     return matchType && matchSearch;
-  });
+  }), [instructions, typeFilter, search]);
 
   function renderOpcodeBin(val) {
     let bin = '';
@@ -104,6 +109,7 @@ export default function App() {
         style={{ color: '#52c41a', cursor: 'pointer', fontWeight: 500 }}
         tabIndex={0}
         role="button"
+        aria-label={text}
         onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setSelected(rec); }}
       >
         {text}
@@ -129,6 +135,9 @@ export default function App() {
     { title: 'Description', dataIndex: 'description', key: 'description' },
   ];
 
+  const bitLayoutInfo = yamlText ? yaml.load(yamlText)?.bit_layout : null;
+  const cellStyle = { border: '1px solid #444', padding: 4 };
+
   return (
     <ConfigProvider
       theme={{
@@ -140,7 +149,7 @@ export default function App() {
           <Title level={3} style={{ margin: 0, color: '#e8eaed', fontWeight: 600 }}>Instruction Set Viewer</Title>
         </Header>
         <Content style={{ margin: 24 }}>
-          <div style={{ marginBottom: 16, display: 'flex', gap: 16 }}>
+          <div style={{ marginBottom: 16, display: 'flex', gap: 16, alignItems: 'center' }}>
             <Input.Search
               placeholder="Search by name, opcode, description..."
               allowClear
@@ -153,11 +162,12 @@ export default function App() {
               style={{ width: 180 }}
             >
               <Option value="all">All Types</Option>
-              <Option value="arithmetic">Arithmetic</Option>
-              <Option value="logic">Logic</Option>
+              <Option value="arithmetic_logic">Arithmetic/Logic</Option>
               <Option value="memory">Memory/Stack</Option>
               <Option value="control">Control</Option>
             </Select>
+            <div style={{ flex: 1 }} />
+            <Button type="primary" onClick={() => setShowBitLayout(true)} style={{ float: 'right' }}>Bit Layout Info</Button>
           </div>
           <Table
             columns={columns}
@@ -176,6 +186,71 @@ export default function App() {
               <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
                 {yaml.dump(selected)}
               </pre>
+            )}
+          </Modal>
+          <Modal
+            open={showBitLayout}
+            title="Bit Layout Information"
+            onCancel={() => setShowBitLayout(false)}
+            footer={<Button onClick={() => setShowBitLayout(false)}>Close</Button>}
+            keyboard={true}
+          >
+            {bitLayoutInfo ? (
+              <div>
+                <h4 style={{ color: '#52c41a', marginBottom: 8 }}>Opcode Bit Layout</h4>
+                <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: 16 }}>
+                  <thead>
+                    <tr style={{ color: '#e8eaed', background: '#23272e' }}>
+                      <th style={cellStyle}>Bit Range</th>
+                      <th style={cellStyle}>Name</th>
+                      <th style={cellStyle}>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Object.entries(bitLayoutInfo).map(([key, value]) => {
+                      if (typeof value === 'object' && value.name === 'opcode') {
+                        return Object.entries(value.fields).map(([bit, desc]) => (
+                          <tr key={bit}>
+                            <td style={cellStyle}>{bit}</td>
+                            <td style={cellStyle}>{desc}</td>
+                            <td style={cellStyle}></td>
+                          </tr>
+                        ));
+                      }
+                      return (
+                        <tr key={key}>
+                          <td style={cellStyle}>{key}</td>
+                          <td style={cellStyle}>{typeof value === 'object' ? value.name || '' : ''}</td>
+                          <td style={cellStyle}>{typeof value === 'string' ? value : ''}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+                <h4 style={{ color: '#52c41a', marginBottom: 8 }}>Type Encoding</h4>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                  <thead>
+                    <tr style={{ color: '#e8eaed', background: '#23272e' }}>
+                      <th style={cellStyle}>Bits</th>
+                      <th style={cellStyle}>Type</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {bitLayoutInfo.bit_31_to_24?.type_encoding && Object.entries(bitLayoutInfo.bit_31_to_24.type_encoding).map(([bits, type]) => {
+                      // 修复 memory 类型标签颜色
+                      let typeKey = type.split(/[\s(/]/)[0];
+                      return (
+                        <tr key={bits}>
+                          <td style={cellStyle}>{bits}</td>
+                          <td style={cellStyle}><Tag color={getTypeColor(typeKey)}>{type}</Tag></td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <div>No bit layout info.</div>
             )}
           </Modal>
         </Content>
