@@ -25,7 +25,6 @@ instructions:
     opcode: 0x00
     opcode_bin: 0b00000000
     type: arithmetic
-    control: false
     operand1: register|immediate  # 由opcode的bit7决定
     operand2: register|immediate  # 由opcode的bit6决定
     operand3: register
@@ -35,7 +34,6 @@ instructions:
     opcode: 0x01
     opcode_bin: 0b00000001
     type: arithmetic
-    control: false
     operand1: register|immediate  # 由opcode的bit7决定
     operand2: register|immediate  # 由opcode的bit6决定
     operand3: register
@@ -45,7 +43,6 @@ instructions:
     opcode: 0x02
     opcode_bin: 0b00000010
     type: logic
-    control: false
     operand1: register|immediate  # 由opcode的bit7决定
     operand2: register|immediate  # 由opcode的bit6决定
     operand3: register
@@ -55,7 +52,6 @@ instructions:
     opcode: 0x03
     opcode_bin: 0b00000011
     type: logic
-    control: false
     operand1: register|immediate  # 由opcode的bit7决定
     operand2: register|immediate  # 由opcode的bit6决定
     operand3: register
@@ -65,7 +61,6 @@ instructions:
     opcode: 0x04
     opcode_bin: 0b00000100
     type: logic
-    control: false
     operand1: register|immediate  # 由opcode的bit7决定
     operand3: register
     description: 位非, operand3 = ~operand1
@@ -74,7 +69,6 @@ instructions:
     opcode: 0x05
     opcode_bin: 0b00000101
     type: logic
-    control: false
     operand1: register|immediate  # 由opcode的bit7决定
     operand2: register|immediate  # 由opcode的bit6决定
     operand3: register
@@ -84,7 +78,6 @@ instructions:
     opcode: 0x06
     opcode_bin: 0b00000110
     type: arithmetic
-    control: false
     operand1: register|immediate  # 由opcode的bit7决定
     operand2: register|immediate  # 由opcode的bit6决定
     operand3: register
@@ -94,7 +87,6 @@ instructions:
     opcode: 0x07
     opcode_bin: 0b00000111
     type: logic
-    control: false
     operand1: register|immediate  # 由opcode的bit7决定
     operand2: register|immediate  # 由opcode的bit6决定
     operand3: register
@@ -104,7 +96,6 @@ instructions:
     opcode: 0x08
     opcode_bin: 0b00001000
     type: logic
-    control: false
     operand1: register|immediate  # 由opcode的bit7决定
     operand2: register|immediate  # 由opcode的bit6决定
     operand3: register
@@ -114,7 +105,6 @@ instructions:
     opcode: 0x09
     opcode_bin: 0b00001001
     type: logic
-    control: false
     operand1: register|immediate  # 由opcode的bit7决定
     operand2: register|immediate  # 由opcode的bit6决定
     operand3: register
@@ -124,7 +114,6 @@ instructions:
     opcode: 0x0A
     opcode_bin: 0b00001010
     type: logic
-    control: false
     operand1: register|immediate  # 由opcode的bit7决定
     operand2: register|immediate  # 由opcode的bit6决定
     operand3: register
@@ -134,7 +123,6 @@ instructions:
     opcode: 0x0B
     opcode_bin: 0b00001011
     type: logic
-    control: false
     operand1: register|immediate  # 由opcode的bit7决定
     operand2: register|immediate  # 由opcode的bit6决定
     operand3: register
@@ -144,7 +132,6 @@ instructions:
     opcode: 0x0C
     opcode_bin: 0b00001100
     type: arithmetic
-    control: false
     operand1: register|immediate  # 由opcode的bit7决定
     operand2: register|immediate  # 由opcode的bit6决定
     operand3: register
@@ -154,7 +141,6 @@ instructions:
     opcode: 0x0D
     opcode_bin: 0b00001101
     type: arithmetic
-    control: false
     operand1: register|immediate  # 由opcode的bit7决定
     operand2: register|immediate  # 由opcode的bit6决定
     operand3: register
@@ -168,7 +154,6 @@ instructions:
     opcode: 0x10
     opcode_bin: 0b00010000
     type: memory
-    control: false
     operand1: register|immediate  # 要写入的数据, 由opcode的bit7决定
     operand2: register|immediate  # 目标内存地址, 由opcode的bit6决定
     operand3: null
@@ -178,27 +163,24 @@ instructions:
     opcode: 0x11
     opcode_bin: 0b00010001
     type: memory
-    control: false
-    operand1: register|immediate  # 源内存地址, 由opcode的bit7决定
-    operand2: null
+    operand1: null
+    operand2: register|immediate  # 源内存地址, 由opcode的bit6决定
     operand3: register           # 目标寄存器
-    description: 将operand1(address)的数据读入到operand3(register)
+    description: 将operand2(address)的数据读入到operand3(register)
 
   - name: PUSH
-    opcode: 0x12
-    opcode_bin: 0b00010010
+    opcode: 0x16
+    opcode_bin: 0b00010110
     type: memory
-    control: false
     operand1: register|immediate  # 要压入栈的数据, 由opcode的bit7决定
     operand2: null
     operand3: null
     description: 将operand1压入栈
 
   - name: POP
-    opcode: 0x13
-    opcode_bin: 0b00010011
+    opcode: 0x17
+    opcode_bin: 0b00010111
     type: memory
-    control: false
     operand1: null
     operand2: null
     operand3: register           # 弹出数据存入的目标寄存器
@@ -211,7 +193,6 @@ instructions:
     opcode: 0x20
     opcode_bin: 0b00100000
     type: control
-    control: true
     operand1: register|immediate  # 由opcode的bit7决定
     operand2: register|immediate  # 由opcode的bit6决定
     operand3: address
@@ -221,7 +202,6 @@ instructions:
     opcode: 0x21
     opcode_bin: 0b00100001
     type: control
-    control: true
     operand1: register|immediate  # 由opcode的bit7决定
     operand2: register|immediate  # 由opcode的bit6决定
     operand3: address
@@ -231,7 +211,6 @@ instructions:
     opcode: 0x22
     opcode_bin: 0b00100010
     type: control
-    control: true
     operand1: register|immediate  # 由opcode的bit7决定
     operand2: register|immediate  # 由opcode的bit6决定
     operand3: address
@@ -241,7 +220,6 @@ instructions:
     opcode: 0x23
     opcode_bin: 0b00100011
     type: control
-    control: true
     operand1: register|immediate  # 由opcode的bit7决定
     operand2: register|immediate  # 由opcode的bit6决定
     operand3: address
@@ -251,7 +229,6 @@ instructions:
     opcode: 0x24
     opcode_bin: 0b00100100
     type: control
-    control: true
     operand1: register|immediate  # 由opcode的bit7决定
     operand2: register|immediate  # 由opcode的bit6决定
     operand3: address
@@ -261,8 +238,46 @@ instructions:
     opcode: 0x25
     opcode_bin: 0b00100101
     type: control
-    control: true
     operand1: register|immediate  # 由opcode的bit7决定
     operand2: register|immediate  # 由opcode的bit6决定
     operand3: address
     description: 如果operand1 >= operand2, 则跳转到operand3(address)
+
+  - name: LTU
+    opcode: 0x26
+    opcode_bin: 0b00100110
+    type: control
+    operand1: register|immediate  # 由opcode的bit7决定
+    operand2: register|immediate  # 由opcode的bit6决定
+    operand3: address
+    description: 如果operand1 < operand2 (无符号), 则跳转到operand3(address)
+
+  - name: LTEQU
+    opcode: 0x27
+    opcode_bin: 0b00100111
+    type: control
+    operand1: register|immediate  # 由opcode的bit7决定
+    operand2: register|immediate  # 由opcode的bit6决定
+    operand3: address
+    description: 如果operand1 <= operand2 (无符号), 则跳转到operand3(address)
+
+  # =========================================
+  # |  Subroutine Instructions              |
+  # =========================================
+  - name: CALL
+    opcode: 0xFE
+    opcode_bin: 0b11111110
+    type: control
+    operand1: null
+    operand2: null
+    operand3: address
+    description: 跳转到operand3(address)，并保存返回地址到栈
+
+  - name: RET
+    opcode: 0xFF
+    opcode_bin: 0b11111111
+    type: control
+    operand1: null
+    operand2: null
+    operand3: null
+    description: 从栈弹出返回地址并跳转，实现函数返回
