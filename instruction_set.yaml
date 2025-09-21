@@ -80,6 +80,86 @@ instructions:
     operand3: register
     description: 三操作数位异或, operand3 = operand1 ^ operand2
 
+  - name: MUL
+    opcode: 0x06
+    opcode_bin: 0b00000110
+    type: arithmetic
+    control: false
+    operand1: register|immediate  # 由opcode的bit7决定
+    operand2: register|immediate  # 由opcode的bit6决定
+    operand3: register
+    description: 三操作数乘法, operand3 = operand1 * operand2
+
+  - name: ROR
+    opcode: 0x07
+    opcode_bin: 0b00000111
+    type: logic
+    control: false
+    operand1: register|immediate  # 由opcode的bit7决定
+    operand2: register|immediate  # 由opcode的bit6决定
+    operand3: register
+    description: 循环右移, operand3 = operand1 循环右移 operand2 位
+
+  - name: ROL
+    opcode: 0x08
+    opcode_bin: 0b00001000
+    type: logic
+    control: false
+    operand1: register|immediate  # 由opcode的bit7决定
+    operand2: register|immediate  # 由opcode的bit6决定
+    operand3: register
+    description: 循环左移, operand3 = operand1 循环左移 operand2 位
+
+  - name: SHR
+    opcode: 0x09
+    opcode_bin: 0b00001001
+    type: logic
+    control: false
+    operand1: register|immediate  # 由opcode的bit7决定
+    operand2: register|immediate  # 由opcode的bit6决定
+    operand3: register
+    description: 逻辑右移, operand3 = operand1 逻辑右移 operand2 位
+
+  - name: SHL
+    opcode: 0x0A
+    opcode_bin: 0b00001010
+    type: logic
+    control: false
+    operand1: register|immediate  # 由opcode的bit7决定
+    operand2: register|immediate  # 由opcode的bit6决定
+    operand3: register
+    description: 逻辑左移, operand3 = operand1 逻辑左移 operand2 位
+
+  - name: ASHR
+    opcode: 0x0B
+    opcode_bin: 0b00001011
+    type: logic
+    control: false
+    operand1: register|immediate  # 由opcode的bit7决定
+    operand2: register|immediate  # 由opcode的bit6决定
+    operand3: register
+    description: 算术右移, operand3 = operand1 算术右移 operand2 位
+
+  - name: DIV
+    opcode: 0x0C
+    opcode_bin: 0b00001100
+    type: arithmetic
+    control: false
+    operand1: register|immediate  # 由opcode的bit7决定
+    operand2: register|immediate  # 由opcode的bit6决定
+    operand3: register
+    description: 三操作数除法, operand3 = operand1 / operand2
+
+  - name: MOD
+    opcode: 0x0D
+    opcode_bin: 0b00001101
+    type: arithmetic
+    control: false
+    operand1: register|immediate  # 由opcode的bit7决定
+    operand2: register|immediate  # 由opcode的bit6决定
+    operand3: register
+    description: 三操作数取模, operand3 = operand1 % operand2
+
   # =========================================
   # |  Memory/Stack Instructions            |
   # =========================================
